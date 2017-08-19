@@ -26,7 +26,7 @@ type Hosts struct {
 
 // Return new `Hosts` instance
 func NewHosts() (Hosts, error) {
-	
+
 	hosts := Hosts{path: HostsPath}
 
 	_, err := hosts.Readfile()
@@ -99,7 +99,7 @@ func (h *Hosts) Write() error {
 		return fmt.Errorf("Error: %s is not Writables", h.path)
 	}
 
-	// ファイルに追加
+	// Add to file
 	file, err := os.OpenFile(h.path, os.O_WRONLY|os.O_APPEND, 0660)
 
 	if err != nil {
@@ -159,11 +159,11 @@ func (h *Hosts) Add(ip string, host ...string) (Record, error) {
 			Raw:   raw,
 		}
 
-		// レコード登録
+		// Create record
 		h.records = append(h.records, record)
 	}
 
-	// ファイルに書き込み
+	// Write to file
 	err := h.Write()
 
 	if err != nil {
@@ -194,11 +194,11 @@ func (h *Hosts) Remove(ip string) (Record, error) {
 		}
 	}
 
-	// 該当のレコードを除いた新しいsliceを作成する
+	// Create a new slice excluding the corresponding record
 	record = h.records[index]
 	h.records = append(h.records[:index], h.records[index+1:]...)
 
-	// ファイルに書き込み
+	// Write to file
 	err := h.Write()
 
 	if err != nil {
@@ -235,7 +235,7 @@ func (h *Hosts) Update(ip string, host ...string) (Record, error) {
 		}
 	}
 
-	// ファイルに書き込み
+	// Write to file
 	err := h.Write()
 
 	if err != nil {
