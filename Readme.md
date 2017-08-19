@@ -7,7 +7,7 @@
 #### Install
 
 ```sh
-go get github.com/kazu69/hosts_file_manager
+go get -u github.com/kazu69/hosts_file_manager
 ```
 
 #### list
