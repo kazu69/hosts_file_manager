@@ -1,10 +1,13 @@
 package main
 
+
+
 import (
 	"fmt"
 	"os"
 	"time"
 	"strings"
+	"bufio"
 
 	"github.com/kazu69/hosts_file_manager"
 	"github.com/urfave/cli"
@@ -12,6 +15,13 @@ import (
 )
 
 func main() {
+
+	var version = ""
+	file, err := os.Open("../../VERSION")
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		version = scanner.Text()
+	}
 
 	hfm, err := hfm.NewHosts()
 
@@ -22,7 +32,7 @@ func main() {
 
 	app := cli.NewApp()
 	app.Name = "hfm - Hostds File Maneger"
-	app.Version = "0.0.1"
+	app.Version = version
 	app.Compiled = time.Now()
 	app.Authors = []cli.Author{
 		cli.Author{

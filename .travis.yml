@@ -1,5 +1,15 @@
 language: go
 
+go:
+  - 1.6
+  - 1.7
+  - 1.8
+  - tip
+
+env:
+  global:
+    - VERSION=$(cat VERSION)
+
 script:
- - go test -v
- 
+  - go test -v
+
