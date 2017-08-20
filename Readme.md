@@ -1,5 +1,7 @@
 ## hfm
 
+[![Build Status](https://travis-ci.org/kazu69/hosts_file_manager.svg?branch=master)](https://travis-ci.org/kazu69/hosts_file_manager)
+
 > hfm is Golang Hosts File Maneger
 
 ### Install
