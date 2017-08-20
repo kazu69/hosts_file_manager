@@ -2,13 +2,49 @@
 
 > hfm is Golang Hosts File Maneger
 
-### API
-
-#### Install
+### Install
 
 ```sh
 go get -u github.com/kazu69/hosts_file_manager
 ```
+
+### CLI
+
+#### list
+
+```sh
+hfm list
+
+127.0.0.1 localhost
+255.255.255.255 broadcasthost
+::1 localhost
+```
+
+#### Add
+
+```sh
+hfm add 0.0.0.0 hoge.com
+
+Added 0.0.0.0 hoge.com
+```
+
+#### Update
+
+```sh
+hfm update 0.0.0.0 hoge.com huga.com
+
+Updated 0.0.0.0 hoge.com huga.com
+```
+
+#### Remove
+
+```sh
+hfm remove 0.0.0.0
+
+Removed 0.0.0.0 hoge.com huga.com
+```
+
+### API
 
 #### list
 
