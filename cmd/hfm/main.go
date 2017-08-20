@@ -1,27 +1,20 @@
 package main
 
-
-
 import (
 	"fmt"
 	"os"
-	"time"
 	"strings"
-	"bufio"
+	"time"
 
-	"github.com/kazu69/hosts_file_manager"
-	"github.com/urfave/cli"
 	"github.com/ttacon/chalk"
+	"github.com/urfave/cli"
+)
+
+var (
+	version string
 )
 
 func main() {
-
-	var version = ""
-	file, err := os.Open("../../VERSION")
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		version = scanner.Text()
-	}
 
 	hfm, err := hfm.NewHosts()
 
@@ -122,6 +115,6 @@ func main() {
 			},
 		},
 	}
-	
+
 	app.Run(os.Args)
 }
