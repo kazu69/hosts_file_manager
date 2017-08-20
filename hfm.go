@@ -2,12 +2,15 @@ package hfm
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/asaskevich/govalidator"
 )
 
 type Record struct {
@@ -80,6 +83,12 @@ func (h *Hosts) Readfile() (Records, error) {
 func (h *Hosts) Find(ip string) (r Record, exist bool) {
 	record := Record{}
 
+	isValid := govalidator.IsIP(ip)
+
+	if isValid == false {
+		return record, false
+	}
+
 	for _, r := range h.records {
 		if r.IP == ip {
 			record = r
@@ -146,6 +155,12 @@ func (h *Hosts) List() Records {
 func (h *Hosts) Add(ip string, host ...string) (Record, error) {
 	record := Record{}
 
+	isValid := govalidator.IsIP(ip)
+
+	if isValid == false {
+		return record, errors.New("Error: IP is Invalid")
+	}
+
 	_, exist := h.Find(ip)
 
 	if exist == false {
@@ -176,6 +191,12 @@ func (h *Hosts) Add(ip string, host ...string) (Record, error) {
 // Remove record from hosts
 func (h *Hosts) Remove(ip string) (Record, error) {
 	record := Record{}
+
+	isValid := govalidator.IsIP(ip)
+
+	if isValid == false {
+		return record, errors.New("Error: IP is Invalid")
+	}
 
 	_, exist := h.Find(ip)
 
@@ -211,6 +232,12 @@ func (h *Hosts) Remove(ip string) (Record, error) {
 // Update record
 func (h *Hosts) Update(ip string, host ...string) (Record, error) {
 	record := Record{}
+
+	isValid := govalidator.IsIP(ip)
+
+	if isValid == false {
+		return record, errors.New("Error: IP is Invalid")
+	}
 
 	_, exist := h.Find(ip)
 

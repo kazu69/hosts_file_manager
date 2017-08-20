@@ -82,15 +82,15 @@ func TestWrite(t *testing.T) {
 	HostsPath = dir + "/testdata/hosts"
 	hosts, _ := NewHosts()
 
-	hosts.Add("123.123.123", "hoge.com")
+	hosts.Add("123.123.123.123", "hoge.com")
 
-	_, exist := hosts.Find("123.123.123")
+	_, exist := hosts.Find("123.123.123.123")
 
 	if exist == false {
 		t.Error("Faild record writed.")
 	}
 
-	hosts.Remove("123.123.123")
+	hosts.Remove("123.123.123.123")
 }
 
 func TestList(t *testing.T) {
@@ -128,13 +128,19 @@ func TestAdd(t *testing.T) {
 	HostsPath = dir + "/testdata/hosts"
 	hosts, _ := NewHosts()
 
-	added, err := hosts.Add("123.123.123", "hoge.com")
+	_, err := hosts.Add("invalid", "hoge.com")
+
+	if err == nil {
+		t.Error("Faild Add method validation error.")
+	}
+
+	added, err := hosts.Add("123.123.123.123", "hoge.com")
 
 	if err != nil {
 		t.Error("Faild Add method has error.")
 	}
 
-	if added.IP != "123.123.123" {
+	if added.IP != "123.123.123.123" {
 		t.Error("Faild Add method return incorrectly.")
 	}
 
@@ -142,13 +148,13 @@ func TestAdd(t *testing.T) {
 		t.Error("Faild Remove method return incorrectly.")
 	}
 
-	_, exist := hosts.Find("123.123.123")
+	_, exist := hosts.Find("123.123.123.123")
 
 	if exist == false {
 		t.Error("Faild record not added.")
 	}
 
-	hosts.Remove("123.123.123")
+	hosts.Remove("123.123.123.123")
 }
 
 func TestRemove(t *testing.T) {
@@ -156,14 +162,14 @@ func TestRemove(t *testing.T) {
 	HostsPath = dir + "/testdata/hosts"
 	hosts, _ := NewHosts()
 
-	hosts.Add("123.123.123", "hoge.com")
-	removed, err := hosts.Remove("123.123.123")
+	hosts.Add("123.123.123.123", "hoge.com")
+	removed, err := hosts.Remove("123.123.123.123")
 
 	if err != nil {
 		t.Error("Faild Remove method has error.")
 	}
 
-	if removed.IP != "123.123.123" {
+	if removed.IP != "123.123.123.123" {
 		t.Error("Faild Remove method return incorrectly.")
 	}
 
@@ -171,7 +177,7 @@ func TestRemove(t *testing.T) {
 		t.Error("Faild Remove method return incorrectly.")
 	}
 
-	_, exist := hosts.Find("123.123.123")
+	_, exist := hosts.Find("123.123.123.123")
 
 	if exist == true {
 		t.Error("Faild record not removed.")
@@ -183,8 +189,8 @@ func TestUpdatee(t *testing.T) {
 	HostsPath = dir + "/testdata/hosts"
 	hosts, _ := NewHosts()
 
-	hosts.Add("123.123.123", "hoge.com")
-	updated, err := hosts.Update("123.123.123", "fuga.com")
+	hosts.Add("123.123.123.123", "hoge.com")
+	updated, err := hosts.Update("123.123.123.123", "fuga.com")
 
 	if err != nil {
 		t.Error("Faild Update method has error.")
@@ -194,5 +200,5 @@ func TestUpdatee(t *testing.T) {
 		t.Error("Faild Update method return incorrectly.")
 	}
 
-	hosts.Remove("123.123.123")
+	hosts.Remove("123.123.123.123")
 }
