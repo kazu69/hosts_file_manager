@@ -8,6 +8,7 @@ import (
 
 	"github.com/ttacon/chalk"
 	"github.com/urfave/cli"
+	"github.com/kazu69/hosts_file_manager"
 )
 
 var (
