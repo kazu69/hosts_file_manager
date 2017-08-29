@@ -18,6 +18,13 @@ hfm list
 127.0.0.1 localhost
 255.255.255.255 broadcasthost
 ::1 localhost
+
+hfm list --format json
+
+[{"Hosts":["localhost"],"IP":"127.0.0.1","Line":8,"Raw":"127.0.0.1\tlocalhost"},{"Hosts":["broadcasthost"],"IP":"255.255.255.255","Line":9,"Raw":"255.255.255.255\tbroadcasthost"},{"Hosts":["localhost"],"IP":"::1","Line":10,"Raw":"::1 localhost "}]
+```
+
+
 ```
 
 #### Add
