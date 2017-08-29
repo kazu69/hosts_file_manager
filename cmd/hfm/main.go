@@ -6,9 +6,11 @@ import (
 	"strings"
 	"time"
 
+	"encoding/json"
+
+	"github.com/kazu69/hosts_file_manager"
 	"github.com/ttacon/chalk"
 	"github.com/urfave/cli"
-	"github.com/kazu69/hosts_file_manager"
 )
 
 var (
@@ -38,7 +40,7 @@ func main() {
 	add (a)    - hfm add <IP> <HOSTS...>
 	remove (r) - hfm remove <IP>
 	update (u) - hfm update <IP> <HOSTS...>
-	list (l)   - hfm list`
+	list (l)   - hfm list [--format json] `
 	app.Commands = []cli.Command{
 		{
 			Name:    "add",
@@ -101,6 +103,12 @@ func main() {
 			Name:    "list",
 			Aliases: []string{"l"},
 			Usage:   "lits hosts records to hosts file",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "format, f",
+					Usage: "output format type",
+				},
+			},
 			Action: func(c *cli.Context) error {
 				records := hfm.List()
 
@@ -108,10 +116,16 @@ func main() {
 					return err
 				}
 
-				for _, r := range records {
-					fmt.Printf("%s %s\n", r.IP, strings.Join(r.Hosts, " "))
-				}
+				format := c.String("format")
 
+				if format == "json" {
+					b, _ := json.Marshal(records)
+					fmt.Println(string(b))
+				} else {
+					for _, r := range records {
+						fmt.Printf("%s %s\n", r.IP, strings.Join(r.Hosts, " "))
+					}
+				}
 				return nil
 			},
 		},
