@@ -6,9 +6,11 @@ import (
 	"strings"
 	"time"
 
+	"encoding/json"
+
+	"github.com/kazu69/hosts_file_manager"
 	"github.com/ttacon/chalk"
 	"github.com/urfave/cli"
-	"github.com/kazu69/hosts_file_manager"
 )
 
 var (
@@ -35,17 +37,22 @@ func main() {
 	}
 	app.Usage = "hosts file management"
 	app.UsageText = `
-	add (a)    - hfm add <IP> <HOSTS...>
-	remove (r) - hfm remove <IP>
-	update (u) - hfm update <IP> <HOSTS...>
-	list (l)   - hfm list`
+	add (a)    - hfm add <IP> <HOSTS...> [--format json]
+	remove (r) - hfm remove <IP> [--format json]
+	update (u) - hfm update <IP> <HOSTS...> [--format jsos 
+	list (l)   - hfm list [--format json] `
 	app.Commands = []cli.Command{
 		{
 			Name:    "add",
 			Aliases: []string{"a"},
 			Usage:   "add a hosts record to hosts file",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "format, f",
+					Usage: "output format type",
+				},
+			},
 			Action: func(c *cli.Context) error {
-
 				ip := c.Args().Get(0)
 				hosts := c.Args()[1:]
 				record, err := hfm.Add(ip, hosts...)
@@ -54,8 +61,15 @@ func main() {
 					return err
 				}
 
-				cyan := chalk.Cyan.NewStyle()
-				fmt.Printf("%sAdded %s %s\n", cyan, record.IP, strings.Join(record.Hosts, " "))
+				format := c.String("format")
+
+				if format == "json" {
+					json := ToJSON(record)
+					fmt.Println(json)
+				} else {
+					cyan := chalk.Cyan.NewStyle()
+					fmt.Printf("%sAdded %s %s\n", cyan, record.IP, strings.Join(record.Hosts, " "))
+				}
 
 				return nil
 			},
@@ -64,8 +78,13 @@ func main() {
 			Name:    "remove",
 			Aliases: []string{"r"},
 			Usage:   "remove a hosts record to hosts file",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "format, f",
+					Usage: "output format type",
+				},
+			},
 			Action: func(c *cli.Context) error {
-
 				ip := c.Args().Get(0)
 				record, err := hfm.Remove(ip)
 
@@ -73,8 +92,16 @@ func main() {
 					return err
 				}
 
-				red := chalk.Red.NewStyle()
-				fmt.Printf("%sRemoved %s %s\n", red, record.IP, strings.Join(record.Hosts, " "))
+				format := c.String("format")
+
+				if format == "json" {
+					json := ToJSON(record)
+					fmt.Println(json)
+				} else {
+					red := chalk.Red.NewStyle()
+					fmt.Printf("%sRemoved %s %s\n", red, record.IP, strings.Join(record.Hosts, " "))
+				}
+
 				return nil
 			},
 		},
@@ -82,6 +109,12 @@ func main() {
 			Name:    "update",
 			Aliases: []string{"u"},
 			Usage:   "update a hosts record to hosts file",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "format, f",
+					Usage: "output format type",
+				},
+			},
 			Action: func(c *cli.Context) error {
 
 				ip := c.Args().Get(0)
@@ -92,8 +125,16 @@ func main() {
 					return err
 				}
 
-				green := chalk.Green.NewStyle()
-				fmt.Printf("%sUpdated %s %s\n", green, record.IP, strings.Join(record.Hosts, " "))
+				format := c.String("format")
+
+				if format == "json" {
+					json := ToJSON(record)
+					fmt.Println(json)
+				} else {
+					green := chalk.Green.NewStyle()
+					fmt.Printf("%sUpdated %s %s\n", green, record.IP, strings.Join(record.Hosts, " "))
+				}
+
 				return nil
 			},
 		},
@@ -101,6 +142,12 @@ func main() {
 			Name:    "list",
 			Aliases: []string{"l"},
 			Usage:   "lits hosts records to hosts file",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "format, f",
+					Usage: "output format type",
+				},
+			},
 			Action: func(c *cli.Context) error {
 				records := hfm.List()
 
@@ -108,8 +155,15 @@ func main() {
 					return err
 				}
 
-				for _, r := range records {
-					fmt.Printf("%s %s\n", r.IP, strings.Join(r.Hosts, " "))
+				format := c.String("format")
+
+				if format == "json" {
+					json := ToJSON(records)
+					fmt.Println(json)
+				} else {
+					for _, r := range records {
+						fmt.Printf("%s %s\n", r.IP, strings.Join(r.Hosts, " "))
+					}
 				}
 
 				return nil
@@ -118,4 +172,9 @@ func main() {
 	}
 
 	app.Run(os.Args)
+}
+
+func ToJSON(records interface{}) string {
+	b, _ := json.Marshal(records)
+	return string(b)
 }
