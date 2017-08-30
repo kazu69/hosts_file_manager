@@ -37,9 +37,9 @@ func main() {
 	}
 	app.Usage = "hosts file management"
 	app.UsageText = `
-	add (a)    - hfm add <IP> <HOSTS...>
-	remove (r) - hfm remove <IP>
-	update (u) - hfm update <IP> <HOSTS...>
+	add (a)    - hfm add <IP> <HOSTS...> [--format json]
+	remove (r) - hfm remove <IP> [--format json]
+	update (u) - hfm update <IP> <HOSTS...> [--format jsos 
 	list (l)   - hfm list [--format json] `
 	app.Commands = []cli.Command{
 		{
