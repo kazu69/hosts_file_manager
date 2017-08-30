@@ -46,8 +46,13 @@ func main() {
 			Name:    "add",
 			Aliases: []string{"a"},
 			Usage:   "add a hosts record to hosts file",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "format, f",
+					Usage: "output format type",
+				},
+			},
 			Action: func(c *cli.Context) error {
-
 				ip := c.Args().Get(0)
 				hosts := c.Args()[1:]
 				record, err := hfm.Add(ip, hosts...)
@@ -56,8 +61,15 @@ func main() {
 					return err
 				}
 
-				cyan := chalk.Cyan.NewStyle()
-				fmt.Printf("%sAdded %s %s\n", cyan, record.IP, strings.Join(record.Hosts, " "))
+				format := c.String("format")
+
+				if format == "json" {
+					json := ToJSON(record)
+					fmt.Println(json)
+				} else {
+					cyan := chalk.Cyan.NewStyle()
+					fmt.Printf("%sAdded %s %s\n", cyan, record.IP, strings.Join(record.Hosts, " "))
+				}
 
 				return nil
 			},
@@ -66,8 +78,13 @@ func main() {
 			Name:    "remove",
 			Aliases: []string{"r"},
 			Usage:   "remove a hosts record to hosts file",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "format, f",
+					Usage: "output format type",
+				},
+			},
 			Action: func(c *cli.Context) error {
-
 				ip := c.Args().Get(0)
 				record, err := hfm.Remove(ip)
 
@@ -75,8 +92,16 @@ func main() {
 					return err
 				}
 
-				red := chalk.Red.NewStyle()
-				fmt.Printf("%sRemoved %s %s\n", red, record.IP, strings.Join(record.Hosts, " "))
+				format := c.String("format")
+
+				if format == "json" {
+					json := ToJSON(record)
+					fmt.Println(json)
+				} else {
+					red := chalk.Red.NewStyle()
+					fmt.Printf("%sRemoved %s %s\n", red, record.IP, strings.Join(record.Hosts, " "))
+				}
+
 				return nil
 			},
 		},
@@ -84,6 +109,12 @@ func main() {
 			Name:    "update",
 			Aliases: []string{"u"},
 			Usage:   "update a hosts record to hosts file",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "format, f",
+					Usage: "output format type",
+				},
+			},
 			Action: func(c *cli.Context) error {
 
 				ip := c.Args().Get(0)
@@ -94,8 +125,16 @@ func main() {
 					return err
 				}
 
-				green := chalk.Green.NewStyle()
-				fmt.Printf("%sUpdated %s %s\n", green, record.IP, strings.Join(record.Hosts, " "))
+				format := c.String("format")
+
+				if format == "json" {
+					json := ToJSON(record)
+					fmt.Println(json)
+				} else {
+					green := chalk.Green.NewStyle()
+					fmt.Printf("%sUpdated %s %s\n", green, record.IP, strings.Join(record.Hosts, " "))
+				}
+
 				return nil
 			},
 		},
@@ -119,17 +158,23 @@ func main() {
 				format := c.String("format")
 
 				if format == "json" {
-					b, _ := json.Marshal(records)
-					fmt.Println(string(b))
+					json := ToJSON(records)
+					fmt.Println(json)
 				} else {
 					for _, r := range records {
 						fmt.Printf("%s %s\n", r.IP, strings.Join(r.Hosts, " "))
 					}
 				}
+
 				return nil
 			},
 		},
 	}
 
 	app.Run(os.Args)
+}
+
+func ToJSON(records interface{}) string {
+	b, _ := json.Marshal(records)
+	return string(b)
 }
